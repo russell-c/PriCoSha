@@ -49,12 +49,16 @@ def home():
     user = session['email']
     cursor = conn.cursor()
     
-    query = "SELECT item_id, post_time, file_path, item_name FROM Content_Item WHERE is_pub = TRUE AND (DATEDIFF(CURDATE(), post_time)) <= 1"
+    query = "SELECT item_id, email_post, post_time, file_path, item_name FROM Content_Item WHERE is_pub = TRUE AND (DATEDIFF(CURDATE(), post_time)) <= 1"
     cursor.execute(query)
     content_items = cursor.fetchall() 
     cursor.close()
-    print(content_items)
     return render_template('home.html', user=user, contents=content_items)
+
+@app.route('/logout')
+def logout():
+    session.pop('email')
+    return redirect('/')
 
 app.secret_key = 'secret :)'
 if __name__ == "__main__":

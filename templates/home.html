@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>PriCosha Home</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/home.css') }}">
   </head>
   <body>
     <h1>Welcome {{user}}</h1>
+
+    <h2>Recents</h2>
     <table>
       {% for ci in contents %}
         <tr>
@@ -24,5 +27,6 @@
         </tr>
       {% endfor %}
     </table>
+    <a href="/logout">Log out</a>
   </body>
 </html>
