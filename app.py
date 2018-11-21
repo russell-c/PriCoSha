@@ -44,8 +44,14 @@ def loginAuth():
 @app.route('/home')
 def home():
     user = session['email']
-    print(user)
-    return render_template('home.html', user=user)
+    cursor = conn.cursor()
+    
+    query = "SELECT item_id, post_time, file_path, item_name FROM Content_Item WHERE is_pub = TRUE AND (DATEDIFF(CURDATE(), post_time)) <= 1"
+    cursor.execute(query)
+    content_items = cursor.fetchall() 
+    cursor.close()
+    print(content_items)
+    return render_template('home.html', user=user, contents=content_items)
 
 app.secret_key = 'secret :)'
 if __name__ == "__main__":

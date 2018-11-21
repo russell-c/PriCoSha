@@ -6,5 +6,23 @@
   </head>
   <body>
     <h1>Welcome {{user}}</h1>
+    <table>
+      {% for ci in contents %}
+        <tr>
+          <th>Name</th>
+          <th>Content ID</th>
+          <th>Timestamp</th>
+          <th>File Path</th>
+          <th>Posted By</th>
+        </tr>
+        <tr>
+          <td>{{ci.item_name}}</td>
+          <td>{{ci.item_id}}</td>
+          <td>{{ci.post_time}}</td>
+          <td>{{ci.file_path}}</td>
+          <td>{{ci.email_post}}</td>
+        </tr>
+      {% endfor %}
+    </table>
   </body>
 </html>
