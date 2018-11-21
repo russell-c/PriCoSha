@@ -1,5 +1,6 @@
 from flask import render_template, Flask, request, session, url_for, redirect
 import pymysql.cursors
+import hashlib
 
 app = Flask(__name__)
 
@@ -24,11 +25,13 @@ def login():
 def loginAuth():
     email = request.form['email']
     password = request.form['password']
+    hashedPassword = hashlib.sha256(password.encode()).hexdigest()
+    print(hashedPassword)
 
     cursor = conn.cursor()
 
     query = 'SELECT * FROM person WHERE email = %s AND password = %s'
-    cursor.execute(query, (email, password))
+    cursor.execute(query, (email, hashedPassword))
     data = cursor.fetchone()
 
     cursor.close()
