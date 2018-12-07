@@ -8,16 +8,16 @@
   <body>
     <h1>Welcome {{user}}</h1>
 
-    <h2>Recents</h2>
+    <h2>Recent Public Posts</h2>
     <table>
+      <tr>
+        <th>Name</th>
+        <th>Content ID</th>
+        <th>Timestamp</th>
+        <th>File Path</th>
+        <th>Posted By</th>
+      </tr>
       {% for ci in contents %}
-        <tr>
-          <th>Name</th>
-          <th>Content ID</th>
-          <th>Timestamp</th>
-          <th>File Path</th>
-          <th>Posted By</th>
-        </tr>
         <tr>
           <td>{{ci.item_name}}</td>
           <td>{{ci.item_id}}</td>
@@ -27,6 +27,37 @@
         </tr>
       {% endfor %}
     </table>
+
+    <h2>Shared Posts</h2>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Content ID</th>
+        <th>Timestamp</th>
+        <th>File Path</th>
+        <th>Posted By</th>
+        <th>Tags and Ratings</th>
+        <th>Tag User</th>
+      </tr>
+      {% for sci in sharedContents%}
+        <tr>
+          <td>{{sci.item_name}}</td>
+          <td>{{sci.item_id}}</td>
+          <td>{{sci.post_time}}</td>
+          <td><a href={{sci.file_path}}>{{sci.file_path}}</a></td>
+          <td>{{sci.email_post}}</td>
+          <td> <form class="" action="/ratingsAndTags" method="POST">
+            <input type="hidden" name="id" value={{sci.item_id}}>
+            <input type="submit" value="View">
+          </form> </td>
+          <td> <form class="" action="/tagUser" method="POST">
+            <input type="hidden" name="id" value={{sci.item_id}}>
+            <input type="submit" value="Tag">
+          </form> </td>
+        </tr>
+      {% endfor %}
+    </table>
+    <a href="/manageTags">Manage Tags</a>
     <a href="/logout">Log out</a>
   </body>
 </html>

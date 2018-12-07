@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>PriCosha - Manage Tags</title>
+  </head>
+  <body>
+    <h1>Welcome {{user}}</h1>
+    <h2>Pending Tag Requests</h2>
+    <table>
+      <tr>
+        <th>Tagged By</th>
+        <th>Posted By</th>
+        <th>Item ID</th>
+        <th>Item Name</th>
+        <th>Approve?</th>
+      </tr>
+      {%for tr in requests%}
+        <tr>
+          <td>{{tr.tagger_email}}</td>
+          <td>{{tr.email_post}}</td>
+          <td>{{tr.item_id}}</td>
+          <td>{{tr.item_name}}</td>
+          <td>
+            <form action="/approve" method="POST">
+              <input type="hidden" name="tagger" value={{tr.tagger_email}}>
+              <input type="hidden" name="tagged" value={{user}}>
+              <input type="hidden" name="id" value={{tr.item_id}}>
+              <input type="submit" name="yes" value="YES">
+              <input type="submit" name="yes" value="NO">
+            </form>
+          </td>
+        </tr>
+      {%endfor%}
+    </table>
+    <a href="/home">Home</a>
+  </body>
+</html>

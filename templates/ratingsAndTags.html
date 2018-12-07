@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Ratings for Item {{item}}</title>
+  </head>
+  <body>
+    <h2>Tagged Persons</h2>
+    <ul>
+      {%for t in tags%}
+        <li>{{t.f_name}} {{t.l_name}}</li>
+      {%endfor%}
+    </ul>
+
+    <h2>Ratings</h2>
+    <ul>
+      {%for r in rates%}
+        <li>{{r.emoji}} - {{r.email}} <i>{{r.rate_time}}</i></li>
+      {%endfor%}
+    </ul>
+    <a href="/home">Home</a>
+  </body>
+</html>
