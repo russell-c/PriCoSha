@@ -26,7 +26,6 @@ def loginAuth():
     email = request.form['email']
     password = request.form['password']
     hashedPassword = hashlib.sha256(password.encode()).hexdigest()
-    print(hashedPassword)
 
     cursor = conn.cursor()
 
@@ -151,6 +150,29 @@ def tag():
             cursor.close()
             return render_template('tagUser.html', error=error)
 
+@app.route('/post', methods=['GET', 'POST'])
+def post():
+    return render_template('post_content.html')
+
+@app.route('/post_item', methods=['POST'])
+def post_item():
+    email = session['email']
+    item_name = request.form['item_name']
+    is_pub = request.form['is_pub']
+    file_path = request.form['file_path']
+
+    cursor = conn.cursor()
+
+    if is_pub is None:
+        is_pub = "0"
+
+    query = "INSERT INTO content_item (file_path, item_name, is_pub, email_post) VALUES (%s, %s, %s, %s)"
+
+    cursor.execute(query, (file_path, item_name, is_pub, email))
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for('post'))
 
 app.secret_key = 'secret :)'
 if __name__ == "__main__":
