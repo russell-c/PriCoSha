@@ -73,12 +73,16 @@ def logout():
 def manageTags():
     user = session['email']
     cursor = conn.cursor()
+
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (user))
+    name = cursor.fetchone()
     
     query = "SELECT tagger_email, email_post, item_id, item_name FROM tag NATURAL JOIN content_item WHERE tagged_email = %s AND status = FALSE"
     cursor.execute(query, (user))
     requests = cursor.fetchall()
     cursor.close()
-    return render_template('manageTags.html', user=user, requests=requests)
+    return render_template('manageTags.html', user=name, requests=requests)
 
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():
@@ -210,7 +214,7 @@ def share_item():
     return redirect(url_for('home'))
 
 @app.route('/add', methods=['GET'])
-def add_friend():
+def add():
     cursor = conn.cursor()
     email = session['email']
     query = 'SELECT fg_name FROM friend_group WHERE email = %s'
@@ -219,6 +223,50 @@ def add_friend():
     fgs = cursor.fetchall()
 
     return render_template('add.html', friend_groups=fgs)
+
+
+@app.route('/add/<friend_group>', methods=['GET', 'POST'])
+def add_friend(friend_group):
+    cursor = conn.cursor()
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    user = cursor.fetchone() 
+
+    success = False
+    persons = None
+
+    return render_template('add_friend.html', user=user, friend_group=friend_group, persons=persons, success=success)
+
+@app.route('/add/<friend_group>/find', methods=['POST'])
+def find_friends(friend_group):
+    cursor = conn.cursor()
+
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    user = cursor.fetchone() 
+
+    fname = request.form['fname']
+    lname = request.form['lname']
+
+    query = "SELECT f_name, l_name, email FROM person WHERE f_name = %s AND l_name = %s"
+    cursor.execute(query, (fname, lname))
+    persons = cursor.fetchall()
+
+    if persons: 
+        success = True
+        return render_template('add_friend.html', user=user, friend_group=friend_group, persons=persons, success=success)
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/add/<friend_group>/<friend_email>', methods=['GET', 'POST'])
+def add_friend_to_group(friend_group, friend_email):
+    cursor = conn.cursor()
+    curr_user = session['email'].lower()
+    query = 'INSERT INTO belong VALUES(%s, %s, %s)'
+    cursor.execute(query, (curr_user, friend_group, friend_email))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('home'))
 
 app.secret_key = 'secret :)'
 if __name__ == "__main__":
