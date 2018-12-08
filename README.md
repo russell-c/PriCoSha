@@ -27,11 +27,11 @@ This is PriCoSha. A system in which users can share content items with the publi
   - This is a good feature to have because people's friend groups in real life are always changing and we wanted our application to reflect that dynamic. This is also about privacy. No one should have access to your content if you disapprove.
   - No new tables were introduced for this feature
   - Here is how it looks in the application
-  ![comments-screen](misc/defriend-screen.png?raw=true "Defriend Webpage"
+  ![comments-screen](misc/defriend-screen.png?raw=true "Defriend Webpage")
   - Here is the before picture of the database
-  ![comments-screen](misc/defriend-db-before.png?raw=true "Defriend DB Before"
+  ![comments-screen](misc/defriend-db-before.png?raw=true "Defriend DB Before")
   - Here is the before picture of the database
-  ![comments-screen](misc/defriend-db-after.png?raw=true "Defriend DB After"
+  ![comments-screen](misc/defriend-db-after.png?raw=true "Defriend DB After")
   
 # Contributions
 Russell Coke: Styling, Database Design and Modelling, Feature Development and Implementation, Testing
