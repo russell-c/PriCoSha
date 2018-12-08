@@ -3,8 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>Ratings for Item {{item}}</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/ratingsAndTags.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   </head>
   <body>
+    <div class="site-title">
+      PriCosha
+    </div>
+    <div class="header">
+        <p>{{user}}</p>
+        <a href="/home">Home</a>
+    </div>
     <h2>Tagged Persons</h2>
     <ul>
       {%for t in tags%}
@@ -18,6 +27,5 @@
         <li>{{r.emoji}} - {{r.email}} <i>{{r.rate_time}}</i></li>
       {%endfor%}
     </ul>
-    <a href="/home">Home</a>
   </body>
 </html>
