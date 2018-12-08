@@ -114,12 +114,13 @@ def viewRatingAndTags():
     rates = cursor.fetchall()
 
     cursor.close()
-    return render_template('ratingsAndTags.html', item=item_id, tags=tags, rates=rates)
+    return render_template('ratingsAndTags.html', user=user, item=item_id, tags=tags, rates=rates)
 
 @app.route('/tagUser', methods=['GET', 'POST'])
 def tagUser():
     user = session['email']
     item_id = int(request.form['id'])
+    
     return render_template('tagUser.html', user=user, item=item_id)
 
 @app.route('/tag', methods=['GET', 'POST'])
@@ -153,7 +154,7 @@ def tag():
         else:
             error = 'This item is not visible to that user'
             cursor.close()
-            return render_template('tagUser.html', error=error)
+            return render_template('tagUser.html', error=error, user=user, item=item_id)
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():

@@ -3,9 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>PriCosha - Manage Tags</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/manageTags.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   </head>
   <body>
-    <h1>Welcome {{user}}</h1>
+    <div class="site-title">
+      PriCosha
+    </div>
+    <div class="header">
+        <p>{{user}}</p>
+        <a href="/home">Home</a>
+    </div>
     <h2>Pending Tag Requests</h2>
     <table>
       <tr>
@@ -33,6 +41,5 @@
         </tr>
       {%endfor%}
     </table>
-    <a href="/home">Home</a>
   </body>
 </html>
