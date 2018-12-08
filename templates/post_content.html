@@ -3,15 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Post to PriCoSha</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/post_content.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   </head>
   <body>
-      <a href="/home">Home</a>
-    <form action="/post_item" method="POST">
-        <input type="text" name="item_name" placeholder="item name" required/> <br>
-        <input type="text" name="file_path" placeholder="file path"/> <br>
-    	<input type="checkbox" name="is_pub" value="1">
-        <label for="is_pub">Make Public?</label> <br>
-    	<input type="submit" value = "Post" />
-    </form>
+    <div class="site-title">
+      PriCosha
+    </div>
+    <div class="header">
+        <p>{{user}}</p>
+        <a href="/home">Home</a>
+    </div>
+    <div class="post-form">
+      <form action="/post_item" method="POST">
+          <input type="text" name="item_name" placeholder="Item Name" required/> <br>
+          <input type="text" name="file_path" placeholder="File Path (optional)"/> <br>
+      	<input type="checkbox" name="is_pub" value="1">
+          <label for="is_pub">Make Public?</label> <br>
+      	<input type="submit" value = "Post" />
+      </form>
+    </div>
   </body>
 </html>

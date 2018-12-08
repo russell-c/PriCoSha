@@ -109,8 +109,27 @@ def viewRatingAndTags():
     cursor.execute(r_query, (item_id))
     rates = cursor.fetchall()
 
+    c_query = "SELECT * FROM comment WHERE item_id = %s"
+    cursor.execute(c_query, (item_id))
+    comments = cursor.fetchall()
+
     cursor.close()
-    return render_template('ratingsAndTags.html', user=user, item=item_id, tags=tags, rates=rates)
+    return render_template('ratingsAndTags.html', user=user, item=item_id, tags=tags, rates=rates, comments=comments)
+
+@app.route('/comment', methods=['GET', 'POST'])
+def comment():
+    user = session['email']
+    item_id = int(request.form['id'])
+    text = request.form['body']
+
+    cursor = conn.cursor()
+    query = "INSERT INTO comment (email, item_id, comment_time, comment) VALUES (%s, %s, CURRENT_TIMESTAMP, %s);"
+    cursor.execute(query, (user, item_id, text))
+    conn.commit()
+    cursor.close()
+    
+    return redirect(url_for('home'))
+    
 
 @app.route('/tagUser', methods=['GET', 'POST'])
 def tagUser():
@@ -154,7 +173,8 @@ def tag():
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
-    return render_template('post_content.html')
+    user = session['email']
+    return render_template('post_content.html', user=user)
 
 @app.route('/post_item', methods=['POST'])
 def post_item():

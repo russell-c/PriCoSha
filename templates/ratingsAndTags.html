@@ -27,5 +27,19 @@
         <li>{{r.emoji}} - {{r.email}} <i>{{r.rate_time}}</i></li>
       {%endfor%}
     </ul>
+
+    <h2>Comments</h2>
+    <ul>
+      {%for c in comments%}
+        <li>{{c.comment}} - {{c.email}} <i>{{c.comment_time}}</i></li>
+      {%endfor%}
+    </ul>
+
+    <h3>Add Comment</h3>
+    <form class="" action="/comment" method="POST">
+      <textarea name="body" placeholder="Add text here..." rows="10", cols="100" required></textarea>
+      <input type="hidden" name="id" value={{item}}>
+      <input type="submit" name="submit" value="submit">
+    </form>
   </body>
 </html>
