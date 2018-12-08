@@ -221,6 +221,7 @@ def add():
     cursor.execute(query, (email))
 
     fgs = cursor.fetchall()
+    cursor.close()
 
     return render_template('add.html', friend_groups=fgs)
 
@@ -231,6 +232,7 @@ def add_friend(friend_group):
     query = "SELECT f_name, l_name FROM person WHERE email = %s"
     cursor.execute(query, (session['email']))
     user = cursor.fetchone() 
+    cursor.close()
 
     success = False
     persons = None
@@ -251,6 +253,7 @@ def find_friends(friend_group):
     query = "SELECT f_name, l_name, email FROM person WHERE f_name = %s AND l_name = %s"
     cursor.execute(query, (fname, lname))
     persons = cursor.fetchall()
+    cursor.close()
 
     if persons: 
         success = True
@@ -267,6 +270,39 @@ def add_friend_to_group(friend_group, friend_email):
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
+
+@app.route('/remove', methods=['GET'])
+def remove():
+    cursor = conn.cursor()
+
+    query = 'SELECT f_name, l_name, email FROM person WHERE email in (SELECT DISTINCT(member_email) FROM belong WHERE owner_email = %s) \
+        AND email != %s'
+    cursor.execute(query, (session['email'], session['email']))
+    friends = cursor.fetchall()
+
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    user = cursor.fetchone() 
+    cursor.close()
+
+    return render_template('remove.html', user=user, friends=friends)
+
+@app.route('/remove/<friend_email>', methods=['GET', 'POST'])
+def remove_friend(friend_email):
+    cursor = conn.cursor()
+    curr_user = session['email']
+    
+    query = "DELETE FROM belong WHERE owner_email = %s AND member_email = %s"
+    cursor.execute(query, (curr_user, friend_email))
+
+    query = "DELETE FROM tag WHERE tagger_email = %s AND tagged_email = %s"
+    cursor.execute(query, (curr_user, friend_email))
+    conn.commit()
+
+    cursor.close()
+
+    return redirect(url_for('remove'))
+
 
 app.secret_key = 'secret :)'
 if __name__ == "__main__":

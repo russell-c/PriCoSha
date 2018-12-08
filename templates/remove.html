@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Remove Friends</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/login.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/manageTags.css') }}">
+    </head>
+    <body>
+            <div class="site-title">Remove Friends</div>
+            <div class="header">
+                <p>{{user.f_name}} {{user.l_name}}</p>
+                <a href="/home">Home</a>
+            </div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Add?</th>
+                </tr>
+                {% for f in friends %}
+                    <tr>
+                        <td>{{f.f_name}} {{f.l_name}}</td>
+                        <td>{{f.email}}</td>
+                        <td> <a href="/remove/{{f.email}}"> Unfriend </a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+    </body>
+</html>
