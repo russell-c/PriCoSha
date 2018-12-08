@@ -49,6 +49,10 @@ def home():
     user = session['email']
     cursor = conn.cursor()
     
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (user))
+    name = cursor.fetchone()
+
     query = "SELECT item_id, email_post, post_time, file_path, item_name FROM Content_Item WHERE is_pub = TRUE AND (DATEDIFF(CURDATE(), post_time)) <= 1"
     cursor.execute(query)
     content_items = cursor.fetchall()
@@ -58,7 +62,7 @@ def home():
     cursor.execute(query2, (user))
     shared_content_items = cursor.fetchall() 
     cursor.close()
-    return render_template('home.html', user=user, contents=content_items, sharedContents=shared_content_items)
+    return render_template('home.html', name=name, contents=content_items, sharedContents=shared_content_items)
 
 @app.route('/logout')
 def logout():
@@ -160,10 +164,12 @@ def post_item():
     email = session['email']
     item_name = request.form['item_name']
 
+    share = False
     if 'is_pub' in request.form:
         is_pub = request.form['is_pub']
     else:
         is_pub = "0"
+        share = True
     
     file_path = request.form['file_path']
 
@@ -179,7 +185,39 @@ def post_item():
     conn.commit()
     cursor.close()
 
-    return redirect(url_for('post'))
+    if share:
+        return redirect(url_for('share'))
+    else:
+        return redirect(url_for('post'))
+
+@app.route('/share', methods=["GET"])
+def share():
+    return render_template('share.html')
+
+@app.route('/share_item', methods=["POST"])
+def share_item():
+    fg = request.form['friendgroup']
+    item_id = request.form['item_id']
+    email = session['email']
+
+    cursor = conn.cursor()
+    query = "INSERT INTO share VALUES(%s, %s, %s)"
+    cursor.execute(query, (item_id, email, fg))
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for('home'))
+
+@app.route('/add', methods=['GET'])
+def add_friend():
+    cursor = conn.cursor()
+    email = session['email']
+    query = 'SELECT fg_name FROM friend_group WHERE email = %s'
+    cursor.execute(query, (email))
+
+    fgs = cursor.fetchall()
+
+    return render_template('add.html', friend_groups=fgs)
 
 app.secret_key = 'secret :)'
 if __name__ == "__main__":
