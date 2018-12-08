@@ -3,13 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Share item with friends</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/tagUser.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   </head>
   <body>
-      <a href="/home">Home</a>
-    <form action="/share_item" method="POST">
-        <input type="text" name="item_id" placeholder="item id" required/> <br>
-        <input type="text" name="friendgroup" placeholder="share with your friendgroup" required/> <br>
-    	<input type="submit" value = "Share!" />
-    </form>
+    <div class="site-title">
+      PriCosha
+    </div>
+    <div class="header">
+        <p>{{user.f_name}} {{user.l_name}}</p>
+        <a href="/home">Home</a>
+    </div>
+    <div class="tag-form">
+      <form action="/share_item" method="POST">
+          <input type="hidden" name="item_id" value={{id}} required/> <br>
+          <input type="text" name="friendgroup" placeholder="share with your friendgroup" required/> <br>
+      	<input type="submit" value = "Share!" />
+      </form>
+    </div>
   </body>
 </html>
