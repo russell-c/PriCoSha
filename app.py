@@ -105,8 +105,12 @@ def approve():
 
 @app.route('/ratingsAndTags', methods=['GET', 'POST'])
 def viewRatingAndTags():
-    user = session['email']
     cursor = conn.cursor()
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    username = cursor.fetchone() 
+
+    user = session['email']
     item_id = int(request.form['id'])
 
     t_query = "SELECT f_name, l_name FROM (tag NATURAL JOIN content_item) JOIN person ON (tagged_email = person.email) WHERE item_id = %s AND status = TRUE"
@@ -117,22 +121,52 @@ def viewRatingAndTags():
     cursor.execute(r_query, (item_id))
     rates = cursor.fetchall()
 
+    c_query = "SELECT * FROM comment WHERE item_id = %s"
+    cursor.execute(c_query, (item_id))
+    comments = cursor.fetchall()
+
     cursor.close()
-    return render_template('ratingsAndTags.html', user=user, item=item_id, tags=tags, rates=rates)
+    return render_template('ratingsAndTags.html', user=user, item=item_id, tags=tags, rates=rates, comments=comments, username=username)
+
+@app.route('/comment', methods=['GET', 'POST'])
+def comment():
+    user = session['email']
+    item_id = int(request.form['id'])
+    text = request.form['body']
+
+    cursor = conn.cursor()
+    query = "INSERT INTO comment (email, item_id, comment_time, comment) VALUES (%s, %s, CURRENT_TIMESTAMP, %s);"
+    cursor.execute(query, (user, item_id, text))
+    conn.commit()
+    cursor.close()
+    
+    return redirect(url_for('home'))
+    
 
 @app.route('/tagUser', methods=['GET', 'POST'])
 def tagUser():
+    cursor = conn.cursor()
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    username = cursor.fetchone() 
+    cursor.close()
+
     user = session['email']
     item_id = int(request.form['id'])
     
-    return render_template('tagUser.html', user=user, item=item_id)
+    return render_template('tagUser.html', user=user, item=item_id, username=username)
 
 @app.route('/tag', methods=['GET', 'POST'])
 def tag():
+    cursor = conn.cursor()
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    username = cursor.fetchone() 
+
     user = session['email']
     email = request.form['email']
     item_id = int(request.form['id'])
-    cursor = conn.cursor()
+    
 
     if user == email:
         query = "INSERT INTO tag (tagged_email, tagger_email, item_id, tag_time, status) VALUES (%s, %s, %s, CURRENT_TIMESTAMP, '1');"
@@ -158,14 +192,25 @@ def tag():
         else:
             error = 'This item is not visible to that user'
             cursor.close()
-            return render_template('tagUser.html', error=error, user=user, item=item_id)
+            return render_template('tagUser.html', error=error, user=user, item=item_id, username=username)
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
-    return render_template('post_content.html')
+    cursor = conn.cursor()
+
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    user = cursor.fetchone() 
+    return render_template('post_content.html', user=user)
 
 @app.route('/post_item', methods=['POST'])
 def post_item():
+    cursor = conn.cursor()
+
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    user = cursor.fetchone() 
+
     email = session['email']
     item_name = request.form['item_name']
 
@@ -178,8 +223,6 @@ def post_item():
     
     file_path = request.form['file_path']
 
-    cursor = conn.cursor()
-
     if file_path:
         query = "INSERT INTO content_item (file_path, item_name, is_pub, email_post) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (file_path, item_name, is_pub, email))
@@ -188,10 +231,11 @@ def post_item():
         cursor.execute(query, (item_name, is_pub, email))
     
     conn.commit()
+    id = cursor.lastrowid
     cursor.close()
 
     if share:
-        return redirect(url_for('share'))
+        return render_template('share.html', id=id, user=user)
     else:
         return redirect(url_for('post'))
 
@@ -217,13 +261,17 @@ def share_item():
 def add():
     cursor = conn.cursor()
     email = session['email']
+    query = "SELECT f_name, l_name FROM person WHERE email = %s"
+    cursor.execute(query, (session['email']))
+    user = cursor.fetchone()
+
     query = 'SELECT fg_name FROM friend_group WHERE email = %s'
     cursor.execute(query, (email))
 
     fgs = cursor.fetchall()
     cursor.close()
 
-    return render_template('add.html', friend_groups=fgs)
+    return render_template('add.html', friend_groups=fgs, user=user)
 
 
 @app.route('/add/<friend_group>', methods=['GET', 'POST'])

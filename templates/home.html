@@ -32,7 +32,11 @@
           <td>{{ci.item_name}}</td>
           <td>{{ci.item_id}}</td>
           <td>{{ci.post_time}}</td>
-          <td>{{ci.file_path}}</td>
+          {%if ci.file_path != None%}
+            <td><a href={{ci.file_path}}>{{ci.file_path}}</a></td>
+          {%else%}
+            <td>{{ci.file_path}}</td>
+          {%endif%}
           <td>{{ci.email_post}}</td>
         </tr>
       {% endfor %}
@@ -54,7 +58,11 @@
           <td>{{sci.item_name}}</td>
           <td>{{sci.item_id}}</td>
           <td>{{sci.post_time}}</td>
-          <td><a href={{sci.file_path}}>{{sci.file_path}}</a></td>
+          {%if sci.file_path != None%}
+            <td><a href={{sci.file_path}}>{{sci.file_path}}</a></td>
+          {%else%}
+            <td>{{sci.file_path}}</td>
+          {%endif%}
           <td>{{sci.email_post}}</td>
           <td> <form class="" action="/ratingsAndTags" method="POST">
             <input type="hidden" name="id" value={{sci.item_id}}>
