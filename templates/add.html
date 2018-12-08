@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Add Friend</title>
+    </head>
+    <body>
+        <h2>Add Friend</h2>
+        <ul>
+            {% for fg in friend_groups %}
+                <li>
+                    <a href=/add/{{fg.fg_name}}>{{fg.fg_name}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

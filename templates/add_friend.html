@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Add Friend</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/login.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/manageTags.css') }}">
+    </head>
+    <body>
+            <div class="site-title">Add to: {{friend_group}}</div>
+            <div class="header">
+                <p>{{user.f_name}} {{user.l_name}}</p>
+                <a href="/home">Home</a>
+            </div>
+            {% if not success %}
+                <div class="login-form">
+                    <form action="/add/{{friend_group}}/find" method="POST">
+                        <input type="text" name = "fname" placeholder="First Name" required/> <br>
+                        <input type="text" name = "lname" placeholder="Last Name" required/> <br>
+                        <input type="submit" value = "Find" />
+                    </form>
+                </div>
+            {% endif %}
+            {% if success %}
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Add?</th>
+                    </tr>
+                    {% for p in persons %}
+                        <tr>
+                            <td>{{p.f_name}} {{p.l_name}}</td>
+                            <td>{{p.email}}</td>
+                            <td> <a href="/add/{{friend_group}}/{{p.email}}"> Add! </a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+    </body>
+</html>
