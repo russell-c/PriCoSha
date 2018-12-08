@@ -1,6 +1,7 @@
 from flask import render_template, Flask, request, session, url_for, redirect
 import pymysql.cursors
 import hashlib
+import sys
 
 app = Flask(__name__)
 
@@ -158,17 +159,23 @@ def post():
 def post_item():
     email = session['email']
     item_name = request.form['item_name']
-    is_pub = request.form['is_pub']
+
+    if 'is_pub' in request.form:
+        is_pub = request.form['is_pub']
+    else:
+        is_pub = "0"
+    
     file_path = request.form['file_path']
 
     cursor = conn.cursor()
 
-    if is_pub is None:
-        is_pub = "0"
-
-    query = "INSERT INTO content_item (file_path, item_name, is_pub, email_post) VALUES (%s, %s, %s, %s)"
-
-    cursor.execute(query, (file_path, item_name, is_pub, email))
+    if file_path:
+        query = "INSERT INTO content_item (file_path, item_name, is_pub, email_post) VALUES (%s, %s, %s, %s)"
+        cursor.execute(query, (file_path, item_name, is_pub, email))
+    else:
+        query = "INSERT INTO content_item (item_name, is_pub, email_post) VALUES (%s, %s, %s)"
+        cursor.execute(query, (item_name, is_pub, email))
+    
     conn.commit()
     cursor.close()
 
